@@ -10,6 +10,8 @@ import com.campaign.subscription.service.CampaignService;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -313,12 +315,6 @@ class SubscriptionApplicationTests {
 		subscriptionRequestDTO.setStartDate(LocalDate.now().minusDays(2));
 		subscriptionRequestDTO.setEndDate(LocalDate.now());
 
-		user = new User();
-		user.setAge(20);
-		user.setEmail("abc@facebook.com");
-		user.setId("1");
-		user.setState("Active");
-		user.setPhoneNumber("0919196767");
 		subscriptionResponseDTO = campaignService.saveSubscription(campaignId,subscriptionRequestDTO, user );
 		subscriptionId = subscriptionResponseDTO.getSubscriptionId();
 
@@ -434,6 +430,12 @@ class SubscriptionApplicationTests {
 		//Then
 		assertNotNull(subscriptionResponseDTO.getSubscriptionId());
 
+	}
+
+	@ParameterizedTest
+	@EnumSource(StateType.class )
+	void states_campaign(StateType stateType) {
+		assertNotNull(campaignService.getNextState(stateType));
 	}
 
 }
